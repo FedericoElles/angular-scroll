@@ -154,11 +154,6 @@ directive('duSmoothScroll', function(scroller, duScrollDuration){
       element.on('click', function(e){
         if(!$attr.href || $attr.href.indexOf('#') === -1) return;
         var elem = document.getElementById($attr.href.replace(/.*(?=#[^\s]+$)/, '').substring(1));
-        var context = false;
-        if ($attr.context){
-          context = angular.element(document.getElementById($attr.context));
-        }        
-        
         if(!elem || !elem.getBoundingClientRect) return;
         
         if (e.stopPropagation) e.stopPropagation();
@@ -167,6 +162,12 @@ directive('duSmoothScroll', function(scroller, duScrollDuration){
         var offset = -($attr.offset ? parseInt($attr.offset, 10) : 0);
         var duration = $attr.duration ? parseInt($attr.duration, 10) : duScrollDuration;
         var pos = elem.getBoundingClientRect();
+        
+        var context = false;
+        if ($attr.context){
+          context = angular.element(document.getElementById($attr.context));
+          offset -= context[0].offsetTop;
+        }
 
         scroller.scrollDelta(0, pos.top + (isNaN(offset) ? 0 : offset), duration, context);
       });
